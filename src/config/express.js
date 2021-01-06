@@ -3,6 +3,7 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const compress = require('compression');
 const methodOverride = require('method-override');
+const contentLength = require('express-content-length-validator');
 const cors = require('cors');
 const helmet = require('helmet');
 const passport = require('passport');
@@ -27,6 +28,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // gzip compression
 app.use(compress());
 
+// not vulnerable to large payload attacks
+app.use(contentLength.validateMax({ max: 102400000 }));
+
 // lets you use HTTP verbs such as PUT or DELETE
 // in places where the client doesn't support it
 app.use(methodOverride());
@@ -45,6 +49,9 @@ passport.use('google', strategies.google);
 
 // mount api v1 routes
 app.use('/v1', routes);
+
+// Upload Static file
+app.use('/file', express.static('./storage'));
 
 // if error is not an instanceOf APIError, convert it.
 app.use(error.converter);
