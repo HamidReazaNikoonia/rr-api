@@ -99,6 +99,7 @@ exports.update = async (req, res, next) => {
     const requestData = {
       title: req.body.title || (Note.title || ''),
       description: req.body.description || (Note.description || ''),
+      data: req.body.data || (Note.data || ''),
     };
 
     Note.set(requestData);
